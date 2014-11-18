@@ -62,6 +62,7 @@ class	Core:
 		if (message == ""):
 			message = self.config["banMessage"]
 		self.coreSend("KICK " + self.config["chan"] + " " + user + " : " + message)
+		print "HERE KICK"
 
 	# Join a channel
 	def join(self):

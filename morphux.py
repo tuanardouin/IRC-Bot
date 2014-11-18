@@ -57,7 +57,7 @@ class	Morphux:
 				elif (infos != False):
 					if (infos["command"] in self.commands):
 						self.commands[infos["command"]]["function"](self, infos)
-						print("New command:" + infos["command"])
+						print("New command ["+ infos['nick'] +"]: " + infos["command"])
 					else:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
 			for name, function in self.after.items():
@@ -150,6 +150,8 @@ class	Morphux:
 		user = line.split(" ")
 		user[0] = user[0][1:]
 		self.currentUsers[user[0].split("!")[0]] = True
+		if (user[0].split("!")[0] == self.config['nick']):
+			return
 		for name, function in self.join.items():
 			function(self, user[0].split("!")[0])
 
@@ -163,6 +165,8 @@ class	Morphux:
 		if (userName[0] in self.currentUsers):
 			del self.currentUsers[userName[0]]
 			self.currentUsers[newNick] = True
+		if (newNick == self.config['nick']):
+			return
 		for name, function in self.nickChange.items():
 			function(self, userName[0], newNick)
 
@@ -173,10 +177,8 @@ class	Morphux:
 		line = line.split("\n")
 		for value in line:
 			users = value.split(":")
-	#	:barjavel.freenode.net 353 Bot2fab4u = #morphux :Bot2fab4u abclive ryad Enerdhil[Phone] Valouche Noich @Ne02ptzero enerdhil @CL4P_TP Noich_root
 			if (len(users) >= 2):
 				details = users[1].split(" ")
-				#print value
 				if (len(details) >= 2):
 					if (details[1] == "353"):
 						users = users[2].split(" ")
@@ -220,9 +222,9 @@ class	Morphux:
 	# If User is Admin
 	# @param: string
 	def isAdmin(self, nick):
-		if (userExists(nick)):
-			if ('isAdmin' in self.currentUsers[nick]):
-				if (self.currentUsers[nick] == 1):
+		if (self.userExists(nick)):
+			if (self.currentUsers[nick] != True):
+				if ('isAdmin' in self.currentUsers[nick]):
 					return True
 		return False
 
@@ -235,3 +237,7 @@ class	Morphux:
 			self.sendMessage(args[0] +": <"+ usage +"> ("+help+")")
 		else:
 			self.sendMessage("Can't find command " + args[0])
+
+	# Kick an user
+	def kick(self, user, reason):
+		self.s.kick(user, reason)
