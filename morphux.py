@@ -36,8 +36,6 @@ class	Morphux:
 		while 1:
 			line = self.s.getLine()
 			before = 1
-			#print(line);
-			# Treat Line
 			self.getHeadersLine(line)
 			if ("JOIN" in line):
 				self.onJoin(line)
@@ -50,6 +48,7 @@ class	Morphux:
 			elif ("PRIVMSG" in line):
 				infos = self.getInfo(line)
 				for name, function in self.before.items():
+					print name
 					if (function(self, line) == 0):
 						before = 0
 				if (before == 0):
@@ -74,15 +73,16 @@ class	Morphux:
 
 	# Get Line Information
 	# @param: string
-	def 	getInfo(self, line):
+	def 	getInfo(self, line, force = 0):
 		infos = {}
 		infos["fullLine"] = line
 		args = line.split(":", 2)[2]
 		args = args.split(" ")
 		args = filter(None, args)
-		if (args[0][0] != self.config["symbol"]):
+		if (args[0][0] != self.config["symbol"] and force == 0):
 			return False
-		args[0] = args[0][1:]
+		if (force == 0):
+			args[0] = args[0][1:]
 		infos["command"] = args[0]
 		args.remove(args[0])
 		if (infos["command"] == "help"):
