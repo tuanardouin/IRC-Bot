@@ -57,11 +57,11 @@ class	Morphux:
 				elif (infos != False):
 					if (infos["command"] in self.commands):
 						self.commands[infos["command"]]["function"](self, infos)
+						print("New command:" + infos["command"])
 					else:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
 			for name, function in self.after.items():
 				function(self, line)
-			pprint(self.currentUsers)
 
 	# Send message
 	# @param: string
@@ -170,20 +170,24 @@ class	Morphux:
 	# Get Initial list of Users
 	# @param: string
 	def getHeadersLine(self, line):
-		users = line.split(":")
+		line = line.split("\n")
+		for value in line:
+			users = value.split(":")
 	#	:barjavel.freenode.net 353 Bot2fab4u = #morphux :Bot2fab4u abclive ryad Enerdhil[Phone] Valouche Noich @Ne02ptzero enerdhil @CL4P_TP Noich_root
-
-		if (len(users) >= 2):
-			users = users[1]
-			details = line.split(":")[1].split(" ")
-			pprint(details)
-			if (len(details) >= 2):
-				if (details[1] == "353"):
-					users = users.split(" ")
-					pprint(users)
-					for nickName in users:
-						nickName = nickName.split("\r\n")[0]
-						self.currentUsers[nickName] = True
+			if (len(users) >= 2):
+				details = users[1].split(" ")
+				#print value
+				if (len(details) >= 2):
+					if (details[1] == "353"):
+						users = users[2].split(" ")
+						for nickName in users:
+							nickName = nickName.split("\r\n")[0]
+							nickName = nickName.split("\r")[0]
+							if (nickName[0] == '@'):
+								nickName = nickName[1:]
+								self.currentUsers[nickName] = {"isAdmin": 1}
+							else:
+								self.currentUsers[nickName] = True
 
 	# On User Leave
 	# @param: string
@@ -212,6 +216,15 @@ class	Morphux:
 			return True
 		else:
 			return False
+
+	# If User is Admin
+	# @param: string
+	def isAdmin(self, nick):
+		if (userExists(nick)):
+			if ('isAdmin' in self.currentUsers[nick]):
+				if (self.currentUsers[nick] == 1):
+					return True
+		return False
 
 	# Show Help for a command
 	# @param: list
