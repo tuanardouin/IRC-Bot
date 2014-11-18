@@ -1,0 +1,11 @@
+{
+	"host": "irc.freenode.net",
+	"chan": "#ne02ptzero",
+	"port": "6667",
+	"symbol": "!",
+	"nick": "Bot2fab4u",
+	"password": "",
+	"debug": 1,
+	"identify": 0,
+	"welcomeMessage": "o/"
+}
