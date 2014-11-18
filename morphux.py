@@ -21,6 +21,7 @@ class	Morphux:
 		self.nickChange = {}
 		self.before = {}
 		self.after = {}
+		self.commands = {}
 
 	# Connect the bot to the server and the chan
 	def 	connect(self):
@@ -35,7 +36,7 @@ class	Morphux:
 		while 1:
 			line = self.s.getLine()
 			before = 1
-			print(line);
+			#print(line);
 			# Treat Line
 			self.getHeadersLine(line)
 			if ("JOIN" in line):
@@ -60,6 +61,7 @@ class	Morphux:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
 			for name, function in self.after.items():
 				function(self, line)
+			pprint(self.currentUsers)
 
 	# Send message
 	# @param: string
@@ -83,6 +85,9 @@ class	Morphux:
 		args[0] = args[0][1:]
 		infos["command"] = args[0]
 		args.remove(args[0])
+		if (infos["command"] == "help"):
+			self.showHelp(args)
+			return False
 		infos["args"] = args
 		user = line.split(":", 2)[1]
 		infos["fullUser"] = user.split(" ")[0]
@@ -114,6 +119,7 @@ class	Morphux:
 			klass = klass()
 			result = klass.command()
 			commands = result["command"]
+			pprint(commands)
 			if ("onJoin" in result):
 				for name, function in result["onJoin"].items():
 					self.join[name] = function
@@ -135,7 +141,7 @@ class	Morphux:
 			for name, function in commands.items():
 				commands[name] = function
 			self.s.printOk("OK")
-		self.commands = commands
+			self.commands.update(commands)
 
 
 	# On User Join
@@ -165,9 +171,12 @@ class	Morphux:
 	# @param: string
 	def getHeadersLine(self, line):
 		users = line.split(":")
-		if (len(users) >= 3):
-			users = users[2]
+	#	:barjavel.freenode.net 353 Bot2fab4u = #morphux :Bot2fab4u abclive ryad Enerdhil[Phone] Valouche Noich @Ne02ptzero enerdhil @CL4P_TP Noich_root
+
+		if (len(users) >= 2):
+			users = users[1]
 			details = line.split(":")[1].split(" ")
+			pprint(details)
 			if (len(details) >= 2):
 				if (details[1] == "353"):
 					users = users.split(" ")
@@ -203,3 +212,13 @@ class	Morphux:
 			return True
 		else:
 			return False
+
+	# Show Help for a command
+	# @param: list
+	def showHelp(self, args):
+		if (args[0] in self.commands):
+			usage = self.commands[args[0]]["usage"]
+			help = self.commands[args[0]]["help"]
+			self.sendMessage(args[0] +": <"+ usage +"> ("+help+")")
+		else:
+			self.sendMessage("Can't find command " + args[0])
