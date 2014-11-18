@@ -15,7 +15,12 @@ class	Morphux:
 		fd = open(path)
 		self.config = json.load(fd)
 		self.currentUsers = {}
-		self.onJoin = {}
+		self.join = {}
+		self.leave = {}
+		self.quit = {}
+		self.nickChange = {}
+		self.before = {}
+		self.after = {}
 
 	# Connect the bot to the server and the chan
 	def 	connect(self):
@@ -29,25 +34,32 @@ class	Morphux:
 	def 	loop(self):
 		while 1:
 			line = self.s.getLine()
+			before = 1
 			print(line);
 			# Treat Line
 			self.getHeadersLine(line)
 			if ("JOIN" in line):
-				self.join(line)
+				self.onJoin(line)
 			elif ("PART" in line):
 				self.onLeave(line)
 			elif ("QUIT" in line):
 				self.onQuit(line)
 			elif ("NICK" in line):
-				self.nickChange(line)
+				self.onNickChange(line)
 			elif ("PRIVMSG" in line):
 				infos = self.getInfo(line)
-				if (infos != False):
+				for name, function in self.before.items():
+					if (function(self, line) == 0):
+						before = 0
+				if (before == 0):
+					self.s.CorePrint("Aborting treatement");
+				elif (infos != False):
 					if (infos["command"] in self.commands):
-						self.commands[infos["command"]](self, infos)
+						self.commands[infos["command"]]["function"](self, infos)
 					else:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
-			pprint(self.currentUsers)
+			for name, function in self.after.items():
+				function(self, line)
 
 	# Send message
 	# @param: string
@@ -104,26 +116,40 @@ class	Morphux:
 			commands = result["command"]
 			if ("onJoin" in result):
 				for name, function in result["onJoin"].items():
-					self.onJoin[name] = function
+					self.join[name] = function
+			if ("onLeave" in result):
+				for name, function in result["onLeave"].items():
+					self.leave[name] = function
+			if ("onQuit" in result):
+				for name, function in result["onQuit"].items():
+					self.quit[name] = function
+			if ("onNickChange" in result):
+				for name, function in result["onNickChange"].items():
+					self.nickChange[name] = function
+			if ("before" in result):
+				for name, function in result["before"].items():
+					self.before[name] = function
+			if ("after" in result):
+				for name, function in result["after"].items():
+					self.after[name] = function
 			for name, function in commands.items():
 				commands[name] = function
 			self.s.printOk("OK")
 		self.commands = commands
-		pprint(self.onJoin)
 
 
 	# On User Join
 	# @param: string
-	def join(self, line):
+	def onJoin(self, line):
 		user = line.split(" ")
 		user[0] = user[0][1:]
 		self.currentUsers[user[0].split("!")[0]] = True
-		for name, function in self.onJoin.items():
+		for name, function in self.join.items():
 			function(self, user[0].split("!")[0])
 
 	# On Nick Change
 	# @param: string
-	def nickChange(self, line):
+	def onNickChange(self, line):
 		user = line.split(" ")
 		user[0] = user[0][1:]
 		userName = user[0].split("!")
@@ -131,6 +157,9 @@ class	Morphux:
 		if (userName[0] in self.currentUsers):
 			del self.currentUsers[userName[0]]
 			self.currentUsers[newNick] = True
+		for name, function in self.nickChange.items():
+			function(self, userName[0], newNick)
+
 
 	# Get Initial list of Users
 	# @param: string
@@ -154,6 +183,8 @@ class	Morphux:
 		nickName = user.split("!")[0]
 		if (nickName in self.currentUsers):
 			del self.currentUsers[nickName]
+		for name, function in self.leave.items():
+			function(self, nickName)
 
 	# On User QUIT
 	# @param: string
@@ -162,6 +193,8 @@ class	Morphux:
 		nickName = user.split("!")[0]
 		if (nickName in self.currentUsers):
 			del self.currentUsers[nickName]
+		for name, function in self.quit.items():
+			function(self, nickName)
 
 	# If User is connected
 	# @param: string

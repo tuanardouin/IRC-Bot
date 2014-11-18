@@ -1,18 +1,39 @@
 
 class Hi:
 	def command(self):
-		config = {
+		self.config = {
 			"command": {
-				"hi": self.hiCommand,
-				"cake": self.someCake
+				"hi": {
+					"function": self.hiCommand,
+					"usage": "hi",
+					"help": "Say hi to the bot"
+				},
+				"cake": {
+					"function": self.someCake,
+					"usage": "cake <user>",
+					"help": "Give a piece of cake to someone !"
+				}
 			},
 			"onJoin": {
 				'sayHello' :self.sayHello
 			},
-			"onLeave": self.sayGoodbye,
-
+			"onLeave": { 
+				'sayGoodbye': self.sayGoodbye
+			},
+			"onNickChange": {
+				'newNick': self.newNick
+			},
+			"onQuit": {
+				'quit': self.quit
+			},
+			"before": {
+				'before': self.before
+			},
+			"after": {
+				'after': self.after
+			}
 		}
-		return config
+		return self.config
 
 	def hiCommand(self, Morphux, infos):
 		Morphux.sendMessage("Hello !", infos['nick'])
@@ -30,3 +51,16 @@ class Hi:
 
 	def sayGoodbye(self, Morphux, user):
 		Morphux.sendMessage(user + " is dead...")
+
+	def newNick(self, Morphux, oldNick, newNick):
+		Morphux.sendMessage(oldNick + " change to " + newNick)
+
+	def quit(self, Morphux, nick):
+		Morphux.sendMessage(nick + " quit !")
+
+	def before(self, Morphux, line):
+		#Morphux.sendMessage("Before: " + line)
+		return 1;
+
+	def after(self, Morphux, line):
+		print "after YAY " + line
