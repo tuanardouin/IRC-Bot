@@ -21,6 +21,7 @@ class	Morphux:
 		self.nickChange = {}
 		self.before = {}
 		self.after = {}
+		self.commands = {}
 
 	# Connect the bot to the server and the chan
 	def 	connect(self):
@@ -35,7 +36,7 @@ class	Morphux:
 		while 1:
 			line = self.s.getLine()
 			before = 1
-			print(line);
+			#print(line);
 			# Treat Line
 			self.getHeadersLine(line)
 			if ("JOIN" in line):
@@ -56,6 +57,7 @@ class	Morphux:
 				elif (infos != False):
 					if (infos["command"] in self.commands):
 						self.commands[infos["command"]]["function"](self, infos)
+						print("New command ["+ infos['nick'] +"]: " + infos["command"])
 					else:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
 			for name, function in self.after.items():
@@ -83,6 +85,9 @@ class	Morphux:
 		args[0] = args[0][1:]
 		infos["command"] = args[0]
 		args.remove(args[0])
+		if (infos["command"] == "help"):
+			self.showHelp(args)
+			return False
 		infos["args"] = args
 		user = line.split(":", 2)[1]
 		infos["fullUser"] = user.split(" ")[0]
@@ -114,6 +119,7 @@ class	Morphux:
 			klass = klass()
 			result = klass.command()
 			commands = result["command"]
+			pprint(commands)
 			if ("onJoin" in result):
 				for name, function in result["onJoin"].items():
 					self.join[name] = function
@@ -135,7 +141,7 @@ class	Morphux:
 			for name, function in commands.items():
 				commands[name] = function
 			self.s.printOk("OK")
-		self.commands = commands
+			self.commands.update(commands)
 
 
 	# On User Join
@@ -144,6 +150,8 @@ class	Morphux:
 		user = line.split(" ")
 		user[0] = user[0][1:]
 		self.currentUsers[user[0].split("!")[0]] = True
+		if (user[0].split("!")[0] == self.config['nick']):
+			return
 		for name, function in self.join.items():
 			function(self, user[0].split("!")[0])
 
@@ -157,6 +165,8 @@ class	Morphux:
 		if (userName[0] in self.currentUsers):
 			del self.currentUsers[userName[0]]
 			self.currentUsers[newNick] = True
+		if (newNick == self.config['nick']):
+			return
 		for name, function in self.nickChange.items():
 			function(self, userName[0], newNick)
 
@@ -164,17 +174,22 @@ class	Morphux:
 	# Get Initial list of Users
 	# @param: string
 	def getHeadersLine(self, line):
-		users = line.split(":")
-		if (len(users) >= 3):
-			users = users[2]
-			details = line.split(":")[1].split(" ")
-			if (len(details) >= 2):
-				if (details[1] == "353"):
-					users = users.split(" ")
-					pprint(users)
-					for nickName in users:
-						nickName = nickName.split("\r\n")[0]
-						self.currentUsers[nickName] = True
+		line = line.split("\n")
+		for value in line:
+			users = value.split(":")
+			if (len(users) >= 2):
+				details = users[1].split(" ")
+				if (len(details) >= 2):
+					if (details[1] == "353"):
+						users = users[2].split(" ")
+						for nickName in users:
+							nickName = nickName.split("\r\n")[0]
+							nickName = nickName.split("\r")[0]
+							if (nickName[0] == '@'):
+								nickName = nickName[1:]
+								self.currentUsers[nickName] = {"isAdmin": 1}
+							else:
+								self.currentUsers[nickName] = True
 
 	# On User Leave
 	# @param: string
@@ -203,3 +218,26 @@ class	Morphux:
 			return True
 		else:
 			return False
+
+	# If User is Admin
+	# @param: string
+	def isAdmin(self, nick):
+		if (self.userExists(nick)):
+			if (self.currentUsers[nick] != True):
+				if ('isAdmin' in self.currentUsers[nick]):
+					return True
+		return False
+
+	# Show Help for a command
+	# @param: list
+	def showHelp(self, args):
+		if (args[0] in self.commands):
+			usage = self.commands[args[0]]["usage"]
+			help = self.commands[args[0]]["help"]
+			self.sendMessage(args[0] +": <"+ usage +"> ("+help+")")
+		else:
+			self.sendMessage("Can't find command " + args[0])
+
+	# Kick an user
+	def kick(self, user, reason):
+		self.s.kick(user, reason)

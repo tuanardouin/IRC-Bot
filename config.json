@@ -1,12 +1,12 @@
 {
 	"host": "irc.freenode.net",
-	"chan": "#ne02ptzero",
+	"chan": "#morphux",
 	"port": "6667",
 	"symbol": "!",
-	"nick": "Bot2fab4u",
-	"password": "",
+	"nick": "CL4P_TP",
+	"password": "morphuxftw",
 	"debug": 1,
-	"identify": 0,
+	"identify": 1,
 	"welcomeMessage": "o/",
 	"errorMessage": "Duknow this command !"
 }
