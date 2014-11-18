@@ -4,6 +4,7 @@
 # Includes
 import 		json
 from core.Core import		Core
+from pprint import pprint
 
 
 class	Morphux:
@@ -13,6 +14,8 @@ class	Morphux:
 	def 	__init__(self, path = "/etc/morphux/configBot.json"):
 		fd = open(path)
 		self.config = json.load(fd)
+		self.currentUsers = {}
+		self.onJoin = {}
 
 	# Connect the bot to the server and the chan
 	def 	connect(self):
@@ -26,14 +29,25 @@ class	Morphux:
 	def 	loop(self):
 		while 1:
 			line = self.s.getLine()
+			print(line);
 			# Treat Line
-			if ("PRIVMSG" in line):
+			self.getHeadersLine(line)
+			if ("JOIN" in line):
+				self.join(line)
+			elif ("PART" in line):
+				self.onLeave(line)
+			elif ("QUIT" in line):
+				self.onQuit(line)
+			elif ("NICK" in line):
+				self.nickChange(line)
+			elif ("PRIVMSG" in line):
 				infos = self.getInfo(line)
 				if (infos != False):
 					if (infos["command"] in self.commands):
 						self.commands[infos["command"]](self, infos)
 					else:
-						self.sendMessage("Don't know this command :(", infos["nick"])
+						self.sendMessage(self.config["errorMessage"], infos["nick"])
+			pprint(self.currentUsers)
 
 	# Send message
 	# @param: string
@@ -80,13 +94,79 @@ class	Morphux:
 		self.modules = res
 		self.getCommands()
 
+	# Get modules in dictionnary
 	def getCommands(self):
-		result = {}
+		commands = {}
 		for name, klass in self.modules.items():
 			self.s.CorePrint("Loading '"+ name +"' module...")
 			klass = klass()
-			commands = klass.command()
+			result = klass.command()
+			commands = result["command"]
+			if ("onJoin" in result):
+				for name, function in result["onJoin"].items():
+					self.onJoin[name] = function
 			for name, function in commands.items():
-				result[name] = function
+				commands[name] = function
 			self.s.printOk("OK")
-		self.commands = result
+		self.commands = commands
+		pprint(self.onJoin)
+
+
+	# On User Join
+	# @param: string
+	def join(self, line):
+		user = line.split(" ")
+		user[0] = user[0][1:]
+		self.currentUsers[user[0].split("!")[0]] = True
+		for name, function in self.onJoin.items():
+			function(self, user[0].split("!")[0])
+
+	# On Nick Change
+	# @param: string
+	def nickChange(self, line):
+		user = line.split(" ")
+		user[0] = user[0][1:]
+		userName = user[0].split("!")
+		newNick = user[2][1:]
+		if (userName[0] in self.currentUsers):
+			del self.currentUsers[userName[0]]
+			self.currentUsers[newNick] = True
+
+	# Get Initial list of Users
+	# @param: string
+	def getHeadersLine(self, line):
+		users = line.split(":")
+		if (len(users) >= 3):
+			users = users[2]
+			details = line.split(":")[1].split(" ")
+			if (len(details) >= 2):
+				if (details[1] == "353"):
+					users = users.split(" ")
+					pprint(users)
+					for nickName in users:
+						nickName = nickName.split("\r\n")[0]
+						self.currentUsers[nickName] = True
+
+	# On User Leave
+	# @param: string
+	def onLeave(self, line):
+		user = line.split(" ")[0][1:]
+		nickName = user.split("!")[0]
+		if (nickName in self.currentUsers):
+			del self.currentUsers[nickName]
+
+	# On User QUIT
+	# @param: string
+	def onQuit(self, line):
+		user = line.split(" ")[0][1:]
+		nickName = user.split("!")[0]
+		if (nickName in self.currentUsers):
+			del self.currentUsers[nickName]
+
+	# If User is connected
+	# @param: string
+	def userExists(self, nick):
+		if (nick in self.currentUsers):
+			return True
+		else:
+			return False

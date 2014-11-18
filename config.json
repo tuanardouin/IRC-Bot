@@ -7,5 +7,6 @@
 	"password": "",
 	"debug": 1,
 	"identify": 0,
-	"welcomeMessage": "o/"
+	"welcomeMessage": "o/",
+	"errorMessage": "Duknow this command !"
 }
