@@ -36,6 +36,7 @@ class	Morphux:
 		while 1:
 			line = self.s.getLine()
 			before = 1
+			print line
 			self.getHeadersLine(line)
 			if ("JOIN" in line):
 				self.onJoin(line)
@@ -149,7 +150,12 @@ class	Morphux:
 	def onJoin(self, line):
 		user = line.split(" ")
 		user[0] = user[0][1:]
-		self.currentUsers[user[0].split("!")[0]] = True
+		nickName = user[0].split("!")
+		if (nickName[0] == '@'):
+			nickName = nickName[1:]
+			self.currentUsers[nickName] = {"isAdmin": 1}
+		else:
+			self.currentUsers[user[0].split("!")[0]] = True
 		if (user[0].split("!")[0] == self.config['nick']):
 			return
 		for name, function in self.join.items():
@@ -231,12 +237,18 @@ class	Morphux:
 	# Show Help for a command
 	# @param: list
 	def showHelp(self, args):
-		if (args[0] in self.commands):
-			usage = self.commands[args[0]]["usage"]
-			help = self.commands[args[0]]["help"]
-			self.sendMessage(args[0] +": <"+ usage +"> ("+help+")")
+		if (len(args) != 0):
+			if (args[0] in self.commands):
+				usage = self.commands[args[0]]["usage"]
+				help = self.commands[args[0]]["help"]
+				self.sendMessage(args[0] +": <"+ usage +"> ("+help+")")
+			else:
+				self.sendMessage("Can't find command " + args[0])
 		else:
-			self.sendMessage("Can't find command " + args[0])
+			help = ""
+			for name in self.commands:
+				help = help + name + " "
+			self.sendMessage("Commands available: " + help)
 
 	# Kick an user
 	def kick(self, user, reason):
