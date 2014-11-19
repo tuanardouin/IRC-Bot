@@ -65,12 +65,12 @@ class Matches:
 				self.waitingPlayer = 0;
 				self.matchesNumber = random.randint(15, 25)
 				Morphux.sendMessage("There are " + str(self.matchesNumber) + " matches on the board.")
-				Morphux.sendMessage("Its " + str(self.firstPlayer) + " time to play.")
 				randFirst = random.randint(1, 2)
 				if (randFirst == 1):
 					self.currentPlayer = self.firstPlayer
 				else:
 					self.currentPlayer = self.secondPlayer
+				Morphux.sendMessage("Its " + str(self.currentPlayer) + " time to play.")
 		def declineCommand(self, Morphux, infos):
 			if (self.secondPlayer == infos['nick']):
 				Morphux.sendMessage("No time to play, I see...", infos['nick'])
