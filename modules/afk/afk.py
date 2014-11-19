@@ -26,6 +26,8 @@ class Afk:
 	def afkLook(self, Morphux, line):
 		infos = Morphux.getInfo(line, 1)
 		user = infos['command'].translate(None, "!:,?#")
-		if (user in self.afkList):
+		if (infos['nick'] in self.afkList):
+			del self.afkList[infos['nick']]
+		elif (user in self.afkList):
 			Morphux.sendMessage(user + " is afk ("+ self.afkList[user] +")", infos['nick'])
 		return 1
