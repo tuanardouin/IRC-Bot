@@ -25,10 +25,10 @@ class Quote:
 					}
 				}
 			}
-			json_data = open('quote.json')
-			self.quoteList = json.load(json_data)
+			self.quoteList = json.load(open('modules/quote/quote.json'))
 			self.quote = [None, None, None]
-
+			return self.config
+			
 		def fetchQuote(self, Morphux, infos):
 			if (len(infos['args']) == 0):
 				Morphux.sendMessage("I have " + str(len(self.quoteList))  +" quotes available. Choose one", infos['nick']);
@@ -63,7 +63,7 @@ class Quote:
 						else:
 							i = 1;
 					self.quoteList[len(self.quoteList):] = [self.quote]
-					with open('quote.json', 'w') as f:
+					with open('modules/quote/quote.json', 'w') as f:
 						json.dump(self.quoteList, f);
 					f.close()
 					Morphux.sendMessage("Quote saved as #" + self.quoteList[len(self.quoteList):-1], infos['nick'])
