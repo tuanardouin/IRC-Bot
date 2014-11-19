@@ -1,3 +1,7 @@
+# Morphux-IRC-BOT
+# Matches game
+# By Noich
+
 import	random
 
 class Matches:
@@ -23,6 +27,11 @@ class Matches:
 						"function": self.removeMatches,
 						"usage": "remove [1-2-3]",
 						"help": "Removes a number of matches"
+					},
+					"abort": {
+						"function": self.abortMatch,
+						"usage": "abort",
+						"help": "Aborts the current game before it starts"
 					}
 				}
 			}
@@ -31,6 +40,7 @@ class Matches:
 			self.secondPlayer = 0
 			self.currentPlayer = 0
 			self.matchesNumber = 0
+			self.waitingPlayer = 0
 			return self.config
 		def matchesCommand(self, Morphux, infos):
 			if (self.matchStarted == 0):
@@ -42,7 +52,8 @@ class Matches:
 					Morphux.sendMessage("Hey " + infos['args'][0] + ", " + infos['nick'] + " wants to play a game of matches with you! !game or !decline", infos['nick'])
 					self.firstPlayer = infos['nick']
 					self.secondPlayer = infos['args'][0]
-					self.matchStarted = 1;
+					self.matchStarted = 1
+					self.waitingPlayer = 1
 				else:
 					Morphux.sendMessage("No such user " + infos['args'][0] + " :(", infos['nick'])
 			else:
@@ -51,14 +62,30 @@ class Matches:
 			if (self.secondPlayer != infos['nick']):
 				Morphux.sendMessage("Not you!")
 			else:
+				self.waitingPlayer = 0;
 				self.matchesNumber = random.randint(15, 25)
 				Morphux.sendMessage("There are " + str(self.matchesNumber) + " matches on the board.")
 				Morphux.sendMessage("Its " + str(self.firstPlayer) + " time to play.")
-				self.currentPlayer = self.firstPlayer
+				randFirst = random.randint(1, 2)
+				if (randFirst == 1):
+					self.currentPlayer = self.firstPlayer
+				else:
+					self.currentPlayer = self.secondPlayer
 		def declineCommand(self, Morphux, infos):
 			if (self.secondPlayer == infos['nick']):
 				Morphux.sendMessage("No time to play, I see...", infos['nick'])
 				self.matchStarted = 0
+		def abortMatch(self, Morphux, infos):
+			if (self.matchStarted == 0):
+				Morphux.sendMessage("No matches game running yet", infos['nick'])
+			elif (self.matchStarted == 1 and self.waitingPlayer == 0):
+				Morphux.sendMessage("The match is already started")
+			elif (self.matchStarted == 1 and self.waitingPlayer == 1):
+				Morphux.sendMessage("Cancelling current matches game")
+				self.waitingPlayer = 0
+				self.matchStarted = 0
+				self.firstPlayer = 0
+				self.secondPlayer = 0
 		def removeMatches(self, Morphux, infos):
 			if (self.matchStarted == 1):
 				if (self.currentPlayer != infos['nick']):
@@ -68,7 +95,7 @@ class Matches:
 						self.matchesNumber -= int(infos['args'][0])
 						if (self.matchesNumber <= 0):
 							Morphux.sendMessage(infos['nick'] + " just lost the game!")
-							goKick(infos['nick'], "No noobs in my chan")
+							Morphux.kick(infos['nick'], "No noobs in my chan")
 						else:
 							if (int(infos['args'][0]) > 1):
 								Morphux.sendMessage(infos['nick'] + " removed " + str(infos['args'][0]) + " matches, " + str(self.matchesNumber) + " remaining")
@@ -78,7 +105,7 @@ class Matches:
 								self.currentPlayer = self.secondPlayer
 							else:
 								self.currentPlayer = self.firstPlayer
+					else:
+						Morphux.sendMessage("1 to 3 matches only!")
 			else:
 				Morphux.sendMessage("Not in playmode!")
-
-
