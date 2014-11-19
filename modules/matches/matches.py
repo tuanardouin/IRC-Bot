@@ -96,6 +96,10 @@ class Matches:
 						if (self.matchesNumber <= 0):
 							Morphux.sendMessage(infos['nick'] + " just lost the game!")
 							Morphux.kick(infos['nick'], "No noobs in my chan")
+							self.waitingPlayer = 0
+							self.matchStarted = 0
+							self.firstPlayer = 0
+							self.secondPlayer = 0
 						else:
 							if (int(infos['args'][0]) > 1):
 								Morphux.sendMessage(infos['nick'] + " removed " + str(infos['args'][0]) + " matches, " + str(self.matchesNumber) + " remaining")
