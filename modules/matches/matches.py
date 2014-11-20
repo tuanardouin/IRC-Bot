@@ -119,8 +119,13 @@ class Matches:
 			else:
 				Morphux.sendMessage("Not in playmode!")
 		def resetGame(self, Morphux, infos):
-			self.waitingPlayer = 0
-			self.matchStarted = 0
-			self.firstPlayer = 0
-			self.secondPlayer = 0
-			Morphux.sendMessage("Game have been cancelled by " + infos['nick'] + ". Kick him for me if he was gonna lose!")
+			if ((infos['nick'] == self.firstPlayer or infos['nick'] == self.secondPlayer) and (self.matchStarted == 1 or self.waitingPlayer == 1)):
+				self.waitingPlayer = 0
+				self.matchStarted = 0
+				self.firstPlayer = 0
+				self.secondPlayer = 0
+				Morphux.sendMessage("Game have been cancelled by " + infos['nick'] + ". Kick him for me if he was gonna lose!")
+			elif(self.matchStarted == 1 or self.waitingPlayer == 1):
+				Morphux.sendMessage("Not you!", infos['nick'])
+			else:
+				Morphux.sendMessage("Not ingame!", infos['nick'])
