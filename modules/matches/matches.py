@@ -33,6 +33,11 @@ class Matches:
 						"usage": "abort",
 						"help": "Aborts the current game before it starts"
 					}
+					"forfeit": {
+						"function": self.resetGame,
+						"usage": "forfeit",
+						"help": "Resets the game if one of the players is afk or not playing"
+					}
 				}
 			}
 			self.matchStarted = 0
@@ -113,3 +118,9 @@ class Matches:
 						Morphux.sendMessage("1 to 3 matches only!")
 			else:
 				Morphux.sendMessage("Not in playmode!")
+		def resetGame(self, Morphux, infos):
+			self.waitingPlayer = 0
+			self.matchStarted = 0
+			self.firstPlayer = 0
+			self.secondPlayer = 0
+			Morphux.sendMessage("Game have been cancelled by " + infos['nick'] + ". Kick him for me if he was gonna lose!")
