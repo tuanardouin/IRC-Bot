@@ -32,7 +32,7 @@ class Matches:
 						"function": self.abortMatch,
 						"usage": "abort",
 						"help": "Aborts the current game before it starts"
-					}
+					},
 					"forfeit": {
 						"function": self.resetGame,
 						"usage": "forfeit",
