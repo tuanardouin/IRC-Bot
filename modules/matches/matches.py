@@ -11,7 +11,7 @@ class Matches:
 					"matches": {
 						"function": self.matchesCommand,
 						"usage": "matches [user]",
-						"help": "Duel another user in a matches game"
+						"help": "Duel another user in a matches game."
 					},
 					"game": {
 						"function": self.gameCommand,
