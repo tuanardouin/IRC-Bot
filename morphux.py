@@ -67,6 +67,7 @@ class	Morphux:
 	# @param: string
 	# @param: string (Optional)
 	def 	sendMessage(self, string, user = False):
+		string = string.decode('ascii', 'ignore')
 		if (user != False):
 			self.s.send(user + ": " + string)
 		else:
