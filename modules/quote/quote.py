@@ -27,8 +27,9 @@ class Quote:
 			}
 			with open ("/morphux/Morphux-IRC-Bot/modules/quote/quote.json", "r") as myfile:
 				data=myfile.read().replace('\n', '')
-			string = data.encode("utf-8");
+			string = data.decode('unicode_escape')
 			self.quoteList = json.loads(string)
+                        print self.quoteList
 			self.quote = [None, None, None]
 			return self.config
 
@@ -41,7 +42,7 @@ class Quote:
 				Morphux.sendMessage("Quote #" + infos['args'][0] + ", By: " + str(self.quoteList[int(infos['args'][0])][1]) + ", " + str(self.quoteList[int(infos['args'][0])][0]), infos['nick']);
 				self.quoteList[int(infos['args'][0])][2] = self.quoteList[int(infos['args'][0])][2]
 
-				Morphux.sendMessage(self.quoteList[int(infos['args'][0])][2].encode("utf-8"));
+				Morphux.sendMessage(self.quoteList[int(infos['args'][0])][2]);
 			else:
 				Morphux.sendMessage("No such quote - Nice Try!", infos['nick']);
 

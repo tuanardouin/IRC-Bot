@@ -4,6 +4,7 @@
 # Includes
 import socket
 import sys
+import time
 
 class	Core:
 
@@ -25,7 +26,7 @@ class	Core:
 	# @param: string
 	def CorePrint(self, string):
 		if (self.config["debug"] == 1):
-			print(string),
+			print(string)
 
 	# Print Ok function in green color
 	# @param: string

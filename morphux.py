@@ -3,6 +3,7 @@
 
 # Includes
 import 		json
+import		time
 from core.Core import		Core
 from pprint import pprint
 
@@ -26,13 +27,10 @@ class	Morphux:
 	# Connect the bot to the server and the chan
 	def 	connect(self):
 		self.s = Core(self.config)
-		if (self.config["identify"] != 0):
-			self.s.identify()
-		self.s.join()
-		self.s.send(self.config["welcomeMessage"])
 
 	# Main Loop
 	def 	loop(self):
+		isJoin = 0
 		while 1:
 			line = self.s.getLine()
 			before = 1
@@ -62,12 +60,18 @@ class	Morphux:
 						self.sendMessage(self.config["errorMessage"], infos["nick"])
 			for name, function in self.after.items():
 				function(self, line)
+			if (isJoin == 0 and "AUTH" not in line and "PING" not in line):
+				if (self.config["identify"] != 0):
+					self.s.identify()
+				self.s.send(self.config["welcomeMessage"])
+				self.s.join()
+				isJoin = 1
 
 	# Send message
 	# @param: string
 	# @param: string (Optional)
 	def 	sendMessage(self, string, user = False):
-		string = string.decode('ascii', 'ignore')
+		string = string.encode('utf-8')
 		if (user != False):
 			self.s.send(user + ": " + string)
 		else:
@@ -80,6 +84,8 @@ class	Morphux:
 		infos["fullLine"] = line
 		args = line.split(":", 2)[2]
 		args = args.split(" ")
+		if (len(args) == 0 or len(args[0]) == 0 or args == " " or args == ""):
+			return False;
 		args = filter(None, args)
 		if (args[0][0] != self.config["symbol"] and force == 0):
 			return False
@@ -121,7 +127,7 @@ class	Morphux:
 			klass = klass()
 			result = klass.command()
 			commands = result["command"]
-			pprint(commands)
+#			pprint(commands)
 			if ("onJoin" in result):
 				for name, function in result["onJoin"].items():
 					self.join[name] = function
@@ -192,11 +198,12 @@ class	Morphux:
 						for nickName in users:
 							nickName = nickName.split("\r\n")[0]
 							nickName = nickName.split("\r")[0]
-							if (nickName[0] == '@'):
+							if (nickName == "~Ne02ptzero"):
 								nickName = nickName[1:]
 								self.currentUsers[nickName] = {"isAdmin": 1}
 							else:
-								self.currentUsers[nickName] = True
+								self.currentUsers[nickName] = {"here": 1}
+							print(nickName)
 
 	# On User Leave
 	# @param: string
@@ -221,10 +228,10 @@ class	Morphux:
 	# If User is connected
 	# @param: string
 	def userExists(self, nick):
-		if (nick in self.currentUsers):
-			return True
-		else:
+		if (nick in self.currentUsers.keys()):
 			return False
+		else:
+			return True
 
 	# If User is Admin
 	# @param: string
