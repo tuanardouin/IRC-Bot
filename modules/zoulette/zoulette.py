@@ -15,7 +15,6 @@ class Zoulette:
         self.votes = []
         return self.config
     def zouletteMain(self, Morphux, infos):
-        print(infos)
         if (self.zouletteLaunched == 0):
             if (len(infos['args']) == 0):
                 Morphux.sendMessage("You have to target someone !", infos['nick'])
