@@ -18,19 +18,16 @@ class Zoulette:
         print(infos)
         if (self.zouletteLaunched == 0):
             if (len(infos['args']) == 0):
-                print("toto")
                 Morphux.sendMessage("You have to target someone !", infos['nick'])
             elif ((infos['args'][0] == infos['nick'])):
                 Morphux.kick(infos['nick'], "You're right.")
             elif (Morphux.userExists(infos['args'][0])):
-                print("Hellp")
                 self.zouletteLaunched = 1
                 self.zouletteCount = 1
                 self.votes.append(infos["fullUser"])
                 self.zouletteName = infos['args'][0]
                 Morphux.sendMessage("You just launched a zoulette against " + infos['args'][0], infos['nick'])
         else:
-            print("tito")
             self.zouletteCount += 1
             if (infos['fullUser'] not in self.votes):
                 Morphux.sendMessage("You just voted against " + self.zouletteName, infos['nick'])
