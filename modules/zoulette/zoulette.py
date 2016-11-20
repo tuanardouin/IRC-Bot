@@ -32,9 +32,9 @@ class Zoulette:
                 else:
                     Morphux.sendMessage("User '" + infos['args'][0] + "' does not exists" , infos['nick'])
             else:
-                self.zouletteCount += 1
                 if (self.uniq_id[1] not in self.votes):
                     Morphux.sendMessage("You just voted against " + self.zouletteName, infos['nick'])
+                    self.zouletteCount += 1
                     self.votes.append(self.uniq_id[1])
                 else:
                     Morphux.sendMessage("You can't vote twice little filou !", infos['nick'])
