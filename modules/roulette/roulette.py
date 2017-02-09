@@ -22,7 +22,12 @@ class Roulette:
 					"function": self.shot,
 					"usage": "rshot",
 					"help": "Shot yourself, or not."
-				}
+				},
+                                "rpass": {
+                                        "function": self.passTheGun,
+                                        "usage": "rpass",
+                                        "help": "Pass the gun"
+                                }
 			}
 		}
 		self.users = []
