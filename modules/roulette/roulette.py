@@ -77,11 +77,12 @@ class Roulette:
 
 
 	def start(self, Morphux, infos):
-		Morphux.sendMessage("Let's begin...")
-		self.base = self.count
-		self.onGame = 2
-		self.count = 0
-		Morphux.sendMessage("Your turn, type !rshot", self.users[self.count])
+		if self.onGame == 1:
+			Morphux.sendMessage("Let's begin...")
+			self.base = self.count
+			self.onGame = 2
+			self.count = 0
+			Morphux.sendMessage("Your turn, type !rshot", self.users[self.count])
 		if self.onGame == 0:
 			Morphux.sendMessage("Init the roulette first !", infos['nick'])
 
