@@ -47,10 +47,10 @@ class Roulette:
 		if (self.onGame == 0):
 			Morphux.sendMessage(infos['nick'] + " just started the Russian Roulette ! Type !rjoin if you want to die :)")
 			if len(infos['args']) > 0:
-				if infos['args'][0] > 0:
-					self.base = infos['args'][0]
-				if infos['args'][1] > 0:
-					self.bullet = infos['args'][1]
+				if int(infos['args'][0]) > 0:
+					self.base = int(infos['args'][0])
+				if int(infos['args'][1]) > 0:
+					self.bullet = int(infos['args'][1])
 			self.users.append(infos['nick'])
 			self.onGame = 1
 			self.count = 1
@@ -91,10 +91,7 @@ class Roulette:
 			else:
 				bullet = random.randint(1, self.bullet)
 				if (bullet == 1):
-					time.sleep(0.5)
-					Morphux.sendMessage("Ur so lucky.", infos['nick'])
-					time.sleep(0.5)
-					Morphux.sendMessage("JUST KIDDING U DED", infos['nick'])
+					Morphux.sendMessage("SO BAD IT HURTS", infos['nick'])
 					self.onGame = 0
 					self.base = 3
 					self.bullet = 6
@@ -102,9 +99,8 @@ class Roulette:
 					self.users = []
 					Morphux.kick(infos['nick'], "You shoot me down, bang bang")
 				else:
-					time.sleep(0.5)
-					Morphux.sendMessage("Ur so lucky.", infos['nick'])
 					self.bullet -= 1
+					Morphux.sendMessage("Ur so lucky. " + str(self.bullet) + " bullets left", infos['nick'])
 
 	def passTheGun(self, Morphux, infos):
 		self.count += 1
