@@ -49,6 +49,7 @@ class Roulette:
 			if len(infos['args']) > 0:
 				if int(infos['args'][0]) > 0:
 					self.base = int(infos['args'][0])
+			if len(infos['args']) > 1:
 				if int(infos['args'][1]) > 0:
 					self.bullet = int(infos['args'][1])
 			self.users.append(infos['nick'])
