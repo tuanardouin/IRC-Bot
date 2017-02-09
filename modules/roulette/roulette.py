@@ -106,8 +106,8 @@ class Roulette:
 					Morphux.sendMessage("Ur so lucky.", infos['nick'])
 					self.bullet -= 1
 
-	def passTheGun(self, Morphux, infos)
-		self.count++
+	def passTheGun(self, Morphux, infos):
+		self.count += 1
 		if (self.count == self.base):
 			self.count = 0
 		Morphux.sendMessage("Your turn ! ("+ str(self.bullet)+" bullets)", self.users[self.count])
