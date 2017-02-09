@@ -103,7 +103,7 @@ class Matches:
 				if (self.currentPlayer != infos['nick']):
 					Morphux.sendMessage("Not you!")
 				else:
-					if (int(infos['args'][0]) >= 1 and int(infos['args'][0]) <= 3):
+					if (len(infos['args']) > 0 and infos['args'][0].isdigit() and int(infos['args'][0]) >= 1 and int(infos['args'][0]) <= 3):
 						self.matchesNumber -= int(infos['args'][0])
 						if (self.matchesNumber <= 0):
 							Morphux.sendMessage(infos['nick'] + " just lost the game!")

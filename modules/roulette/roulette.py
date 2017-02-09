@@ -11,7 +11,7 @@ class Roulette:
 			"command": {
 				"rinit": {
 					"function": self.init,
-					"usage": "rinit <players> <bullets>",
+					"usage": "rinit players bullets",
 					"help": "Init the Russian Roulette"
 				},
 				"rstart": {
@@ -47,10 +47,10 @@ class Roulette:
 		if (self.onGame == 0):
 			Morphux.sendMessage(infos['nick'] + " just started the Russian Roulette ! Type !rjoin if you want to die :)")
 			if len(infos['args']) > 0:
-				if int(infos['args'][0]) > 0:
+				if infos['args'][0].isdigit() == True and int(infos['args'][0]) > 0:
 					self.base = int(infos['args'][0])
 			if len(infos['args']) > 1:
-				if int(infos['args'][1]) > 0:
+				if infos['args'][1].isdigit == True and int(infos['args'][1]) > 0:
 					self.bullet = int(infos['args'][1])
 			self.users.append(infos['nick'])
 			self.onGame = 1
@@ -105,6 +105,6 @@ class Roulette:
 
 	def passTheGun(self, Morphux, infos):
 		self.count += 1
-		if (self.count == self.base):
+		if (self.count >= self.base):
 			self.count = 0
 		Morphux.sendMessage("Your turn ! ("+ str(self.bullet)+" bullets)", self.users[self.count])
