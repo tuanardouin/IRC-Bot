@@ -1,6 +1,5 @@
 # Russian Roulette
 # By: Louis <louis@ne02ptzero.me>
-# Cool modifications by truly yours, Noich
 
 import 		random
 import 		time
@@ -11,13 +10,10 @@ class Roulette:
 			"command": {
 				"rinit": {
 					"function": self.init,
+
 					"usage": "rinit players bullets",
+
 					"help": "Init the Russian Roulette"
-				},
-				"rstart": {
-					"function": self.start,
-					"usage": "rstart",
-					"help": "Start even if not enough people"
 				},
 				"rjoin": {
 					"function": self.join,
@@ -28,15 +24,10 @@ class Roulette:
 					"function": self.shot,
 					"usage": "rshot",
 					"help": "Shot yourself, or not."
-				},
-				"rpass": {
-					"function": self.passTheGun,
-					"usage": "rpass",
-					"help": "Pass the gun"
 				}
 			}
 		}
-		self.users = []
+		self.users = {}
 		self.onGame = 0
 		self.count = 0
 		self.base = 3
@@ -45,6 +36,7 @@ class Roulette:
 
 	def init(self, Morphux, infos):
 		if (self.onGame == 0):
+
 			Morphux.sendMessage(infos['nick'] + " just started the Russian Roulette ! Type !rjoin if you want to die :)")
 			if len(infos['args']) > 0:
 				if infos['args'][0].isdigit() == True and int(infos['args'][0]) > 0:
@@ -53,17 +45,18 @@ class Roulette:
 				if infos['args'][1].isdigit == True and int(infos['args'][1]) > 0:
 					self.bullet = int(infos['args'][1])
 			self.users.append(infos['nick'])
+
 			self.onGame = 1
 			self.count = 1
 		elif (self.onGame == 1):
-			Morphux.sendMessage("Game Already launched, type !rjoin", infos['nick'])
+			Morphux.sendMessage("Game Already launch, type !rjoin", infos['nick'])
 		else:
 			Morphux.sendMessage("Already IG", infos['nick'])
 
 	def join(self, Morphux, infos):
 		if (self.onGame == 1):
 			if (infos['nick'] not in self.users):
-				self.users.append(infos['nick'])
+				self.users[self.count] = infos['nick']
 				self.count += 1
 				if (self.count != self.base):
 					Morphux.sendMessage("<- BALLS HERE, need "+ str(self.base - self.count) +" more fools !", infos['nick'])
@@ -84,6 +77,7 @@ class Roulette:
 			self.count = 0
 			Morphux.sendMessage("Your turn, type !rshot", self.users[self.count])
 		if self.onGame == 0:
+
 			Morphux.sendMessage("Init the roulette first !", infos['nick'])
 
 	def shot(self, Morphux, infos):
@@ -93,14 +87,15 @@ class Roulette:
 			else:
 				bullet = random.randint(1, self.bullet)
 				if (bullet == 1):
-					Morphux.sendMessage("SO BAD IT HURTS", infos['nick'])
+					Morphux.sendMessage("Ur so lucky.", infos['nick'])
+					time.sleep(0.5)
+					Morphux.sendMessage("JUST KIDDING U DED", infos['nick'])
 					self.onGame = 0
-					self.base = 3
 					self.bullet = 6
 					self.count = 0
-					self.users = []
 					Morphux.kick(infos['nick'], "You shoot me down, bang bang")
 				else:
+					Morphux.sendMessage("Ur so lucky.", infos['nick'])
 					self.bullet -= 1
 					Morphux.sendMessage("Ur so lucky. " + str(self.bullet) + " bullets left", infos['nick'])
 
