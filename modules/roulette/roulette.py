@@ -105,7 +105,13 @@ class Roulette:
 					Morphux.sendMessage("Ur so lucky. " + str(self.bullet) + " bullets left", infos['nick'])
 
 	def passTheGun(self, Morphux, infos):
-		self.count += 1
-		if (self.count >= self.base):
-			self.count = 0
-		Morphux.sendMessage("Your turn ! ("+ str(self.bullet)+" bullets)", self.users[self.count])
+		if self.onGame == 2:
+			if infos['nick'] == self.users[self.count]:
+				self.count += 1
+				if (self.count >= self.base):
+					self.count = 0
+				Morphux.sendMessage("Your turn ! ("+ str(self.bullet)+" bullets)", self.users[self.count])
+			else:
+				Morphux.sendMessage("Not your turn! Currently playing is "+self.users[self.count], infos['nick'])
+		else:
+			Morphux.sendMessage("You need to init/start the roulette first", infos['nick'])
