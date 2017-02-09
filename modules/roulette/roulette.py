@@ -36,7 +36,7 @@ class Roulette:
 				}
 			}
 		}
-		self.users = {}
+		self.users = []
 		self.onGame = 0
 		self.count = 0
 		self.base = 3
@@ -51,7 +51,7 @@ class Roulette:
 					self.base = infos['args'][0]
 				if infos['args'][1] > 0:
 					self.bullet = infos['args'][1]
-			self.users.push_back(infos['nick'])
+			self.users.append(infos['nick'])
 			self.onGame = 1
 			self.count = 1
 		elif (self.onGame == 1):
@@ -62,7 +62,7 @@ class Roulette:
 	def join(self, Morphux, infos):
 		if (self.onGame == 1):
 			if (infos['nick'] not in self.users):
-				self.users.push_back(infos['nick'])
+				self.users.append(infos['nick'])
 				self.count += 1
 				if (self.count != self.base):
 					Morphux.sendMessage("<- BALLS HERE, need "+ str(self.base - self.count) +" more fools !", infos['nick'])
@@ -99,7 +99,7 @@ class Roulette:
 					self.base = 3
 					self.bullet = 6
 					self.count = 0
-					self.users = {}
+					self.users = []
 					Morphux.kick(infos['nick'], "You shoot me down, bang bang")
 				else:
 					time.sleep(0.5)
