@@ -11,7 +11,12 @@ class Bear:
 				"bear": {
 					"function": self.bear,
 					"usage": "bear",
-					"help": "Hey, you can make bears"
+					"help": "Hey, I'm a bear !"
+				},
+				"bears": {
+					"function": self.bears,
+					"usage": "bears",
+					"help": "Hey, you can make many bears"
 				}
 			}
 		}
@@ -19,3 +24,6 @@ class Bear:
 
 	def bear(self, Morphux, infos):
 		Morphux.sendMessage("ʕ•ᴥ•ʔ", infos['nick'])
+
+	def bears(self, Morphux, infos):
+		Morphux.sendMessage("ʕ•ᴥʕ•ᴥʕ•ᴥ•ʔᴥ•ʔᴥ•ʔ", infos['nick'])
