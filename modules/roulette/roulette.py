@@ -23,11 +23,11 @@ class Roulette:
 					"usage": "rshot",
 					"help": "Shot yourself, or not."
 				},
-                                "rpass": {
-                                        "function": self.passTheGun,
-                                        "usage": "rpass",
-                                        "help": "Pass the gun"
-                                }
+				"rpass": {
+				"function": self.passTheGun,
+			"usage": "rpass",
+				"help": "Pass the gun"
+				}
 			}
 		}
 		self.users = []
@@ -72,7 +72,7 @@ class Roulette:
 
 
 	def start(self, Morphux, infos):
-	        Morphux.sendMessage("Let's begin...")
+		Morphux.sendMessage("Let's begin...")
 		self.base = self.count
 		self.onGame = 2
 		self.count = 0
@@ -89,10 +89,10 @@ class Roulette:
 				if (bullet == 1):
 					Morphux.sendMessage("SO BAD IT HURTS", infos['nick'])
 					self.onGame = 0
-                                        self.base = 3
+					self.base = 3
 					self.bullet = 6
 					self.count = 0
-                                        self.users = []
+					self.users = []
 					Morphux.kick(infos['nick'], "You shoot me down, bang bang")
 				else:
 					self.bullet -= 1

@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 class Mv:
   def command(self):
     self.config = {
@@ -18,8 +19,6 @@ class Mv:
       Morphux.sendMessage("TU VAS LA CHIER TA CHIASSE?", infos['nick'])
     elif (len(infos['args']) == 0):
       Morphux.sendMessage("SARACE BOULBA", infos['nick'])
-    elif (Morphux.userExists(infos['args'][0])):
-      Morphux.sendMessage("Respecte toi " + infos['nick'] + "!", infos['args'][0])
     elif (infos['args'][0] == "allow"):
       Morphux.sendMessage("ALLOW?", infos['nick'])
     elif (infos['args'][0] == "thunes"):
@@ -27,4 +26,6 @@ class Mv:
     elif (infos['args'][0] == "theodule"):
       Morphux.sendMessage("THEODUUULE", infos['nick'])
     elif (infos['args'][0] == "gg"):
-      Morphux.sendMessage("Le beau jeu le beau geste.", infos['nick'])
+      Morphux.sendMessage("Le beau jeu, le beau geste, la lucidité !", infos['nick'])
+    elif (Morphux.userExists(infos['args'][0]) == 0):
+      Morphux.sendMessage("Respecte toi " + infos['args'][0] + "!", infos['nick'])

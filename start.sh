@@ -1,1 +1,1 @@
-cd /morphux/Morphux-IRC-Bot/ && exec /usr/bin/python /morphux/Morphux-IRC-Bot/main.py
+cd /morphux/Morphux-IRC-Bot/ && exec /usr/bin/python3 /morphux/Morphux-IRC-Bot/main.py

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
 # IRC MORPHUX BOT v2
 # By: Louis <louis@ne02ptzero.me>
 #18:09  @Ne02ptzero: !ascii CL4P_TP 
@@ -13,10 +15,11 @@
 
 from morphux 	import		Morphux
 import time
+import imp
 import sys
 # sys.setdefaultencoding() does not exist, here!
-reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
+imp.reload(sys)  # Reload does the trick!
+#sys.setdefaultencoding('UTF8')
 
 main = Morphux("config.json")
 main.connect()

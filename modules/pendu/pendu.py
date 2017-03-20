@@ -28,13 +28,9 @@ class   Pendu:
             Morphux.sendMessage("Already in game !", infos['nick']);
         else:
             self.word = infos['args'][0];
-            print "Word: " + self.word
             self.hidden = "#" * len(self.word)
-            print "Hidden: " + self.hidden
             self.hidden = self.word[0] + self.hidden[1:]
-            print "Hidden: " + self.hidden
             self.hidden = self.hidden[:-1] + self.word[len(self.word) - 1]
-            print "Hidden: " + self.hidden
             Morphux.sendMessage("New word by " + infos['nick'] + ": " + self.hidden);
             self.ig = 1
 
