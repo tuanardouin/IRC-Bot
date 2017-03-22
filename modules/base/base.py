@@ -6,11 +6,7 @@ import random
 class Base:
 
     def ping(self, Morphux, infos):
-        n = random.randint(1, 3)
-        if (n == 3):
-            Morphux.kick("Pong.", infos['nick'])
-        else:
-            Morphux.sendMessage("Pong ! (" + str(n) + ")", infos['nick'])
+        Morphux.sendMessage("Pong !", infos['nick'])
 
     def join(self, Morphux, user):
         Morphux.sendMessage("Hey, howr u doin :) ?", user)
