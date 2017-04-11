@@ -41,4 +41,3 @@ class Base:
             }
         }
         return self.config
-
