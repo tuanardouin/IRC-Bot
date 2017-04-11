@@ -45,7 +45,7 @@ class   Morphux:
                         elif ("NICK" in line):
                                 self.onNickChange(line)
                         elif ("PRIVMSG" in line):
-                                infos = self.getInfo(line)
+                                infos = self.getInfo(line, from_main = 1)
                                 for name, function in self.before.items():
                                         if (function(self, line) == 0):
                                                 before = 0
@@ -78,7 +78,7 @@ class   Morphux:
 
         # Get Line Information
         # @param: string
-        def     getInfo(self, line, force = 0):
+        def     getInfo(self, line, force = 0, from_main = 0):
                 infos = {}
                 infos["fullLine"] = line
                 args = line.split(":", 2)[2]
@@ -91,7 +91,7 @@ class   Morphux:
                         args[0] = args[0][1:]
                 infos["command"] = args[0]
                 args.remove(args[0])
-                if (infos["command"] == "help"):
+                if (infos["command"] == "help" and from_bot == 1):
                         self.showHelp(args)
                         return False
                 infos["args"] = args
