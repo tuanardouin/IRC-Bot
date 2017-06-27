@@ -43,7 +43,6 @@ class Base:
                     "usage": "wow",
                     "help": "Wooow !"
                 }
-
             },
             "onJoin": {
                 "join": self.join
