@@ -17,6 +17,9 @@ class Base:
     def ah(self, Morphux, infos):
         Morphux.sendMessage("https://youtu.be/XE6YaLtctcI", infos['nick'])
 
+    def wow(self, Morphux, infos):
+        Morphux.sendMessage("https://www.youtube.com/embed/jUy9_0M3bVk?autoplay=1", infos['nick'])
+
     def command(self):
         self.config = {
             "command": {
@@ -34,7 +37,13 @@ class Base:
                     "function": self.ah,
                     "usage": "ah",
                     "help": "AH !"
+                },
+                "wow": {
+                    "function": self.wow,
+                    "usage": "wow",
+                    "help": "Wooow !"
                 }
+
             },
             "onJoin": {
                 "join": self.join
